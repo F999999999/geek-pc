@@ -2,10 +2,26 @@ import "./index.scss";
 import logo from "../../assets/images/logo.png";
 import { Button, Checkbox, Form, Input } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { login } from "@/store/userSlice";
 
 const Login = () => {
-  const onFinish = (values) => {
-    console.log("Success:", values);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const onFinish = async (values) => {
+    const result = await dispatch(
+      login({ mobile: values.mobile, code: values.code })
+    );
+    if (!result.error) {
+      // 登录成功
+      window.location.href = "/";
+      navigate("/");
+    } else {
+      // 登录失败
+      alert(result.error);
+    }
   };
 
   return (
@@ -50,7 +66,7 @@ const Login = () => {
 
             <Form.Item
               name="isAgree"
-              valuePropName="Checkbox"
+              valuePropName="checked"
               rules={[
                 {
                   validator: (_, value) => {
