@@ -16,7 +16,6 @@ const Login = () => {
     );
     if (!result.error) {
       // 登录成功
-      window.location.href = "/";
       navigate("/");
     } else {
       // 登录失败
