@@ -23,7 +23,7 @@ const RouterBeforeEach = ({ children }) => {
       // 未登录
       setAuth(false);
       // 跳转到登录页
-      navigate("/login");
+      navigate("/login", { state: { redirectURL: location.pathname } });
     } else {
       // 已登录
       setAuth(true);
