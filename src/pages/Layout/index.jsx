@@ -1,6 +1,6 @@
 import styles from "./index.module.scss";
 import React from "react";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Layout, Menu, Popconfirm } from "antd";
 import { Header } from "antd/es/layout/layout";
 import {
@@ -10,9 +10,13 @@ import {
   LogoutOutlined,
 } from "@ant-design/icons";
 import Sider from "antd/es/layout/Sider";
+import { useDispatch } from "react-redux";
+import { clearToken } from "@/store/userSlice";
 
 const GeekLayout = () => {
   const location = useLocation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // 对发布文章路径进行处理 使其能匹配到菜单的key的值
   const menuSelectedKey = location.pathname.startsWith("/home/publish")
@@ -20,7 +24,12 @@ const GeekLayout = () => {
     : location.pathname;
 
   // 退出登录
-  const onLogout = () => {};
+  const onLogout = () => {
+    // 清空 token
+    dispatch(clearToken());
+    // 跳转到登录页面
+    navigate("/login");
+  };
   return (
     <Layout className={styles.root}>
       {/* 头部 - 横向通栏 */}

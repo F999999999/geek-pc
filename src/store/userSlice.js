@@ -1,5 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getTokenByLocalStorage, http, setTokenByLocalStorage } from "@/utils";
+import {
+  clearTokenByLocalStorage,
+  getTokenByLocalStorage,
+  http,
+  setTokenByLocalStorage,
+} from "@/utils";
 
 // 登录
 export const login = createAsyncThunk("user/login", async (payload) => {
@@ -28,6 +33,13 @@ export const { actions, reducer: userReducer } = createSlice({
       // 更新 state
       state.token = action.payload;
     },
+    // 清空 token
+    clearToken: (state) => {
+      // 清空保存在 localStorage 中的 token
+      clearTokenByLocalStorage();
+      // 清空 state 中的 token
+      state.token = "";
+    },
   },
   // 通过 extraReducers 配置项处理异步 action
   extraReducers: {
@@ -52,6 +64,6 @@ export const { actions, reducer: userReducer } = createSlice({
 
 // actions: 对象类型，用于存储 action creator 函数
 // { setToken: (payload) => ({ type: "user/setToken", payload }) }
-export const { setToken } = actions;
+export const { setToken, clearToken } = actions;
 
 export default userReducer;
