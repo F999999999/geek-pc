@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { checkRouterAuth } from "@/route";
 import { useEffect, useState } from "react";
 import { getTokenByLocalStorage } from "@/utils";
@@ -28,8 +28,8 @@ const RouterBeforeEach = ({ children }) => {
       // 已登录
       setAuth(true);
     }
-  }, [location, navigate]);
-  // 如果认证通过则渲染 children
-  return auth && children;
+  }, []);
+  // 如果认证通过则正常渲染
+  return auth && <Outlet />;
 };
 export default RouterBeforeEach;
