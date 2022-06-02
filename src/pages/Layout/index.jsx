@@ -1,5 +1,5 @@
 import styles from "./index.module.scss";
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Layout, Menu, Popconfirm } from "antd";
 import { Header } from "antd/es/layout/layout";
@@ -10,13 +10,14 @@ import {
   LogoutOutlined,
 } from "@ant-design/icons";
 import Sider from "antd/es/layout/Sider";
-import { useDispatch } from "react-redux";
-import { clearToken } from "@/store/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { clearToken, getUserInfo } from "@/store/userSlice";
 
 const GeekLayout = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const userInfo = useSelector((state) => state.user.userInfo);
 
   // 对发布文章路径进行处理 使其能匹配到菜单的key的值
   const menuSelectedKey = location.pathname.startsWith("/home/publish")
@@ -30,13 +31,17 @@ const GeekLayout = () => {
     // 跳转到登录页面
     navigate("/login");
   };
+
+  useEffect(() => {
+    dispatch(getUserInfo());
+  }, []);
   return (
     <Layout className={styles.root}>
       {/* 头部 - 横向通栏 */}
       <Header className="header">
         <div className="logo" />
         <div className="user-info">
-          <span className="user-name">用户名</span>
+          <span className="user-name">{userInfo.name}</span>
           <span className="user-logout">
             <Popconfirm
               title="是否确认退出？"

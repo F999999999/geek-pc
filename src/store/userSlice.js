@@ -11,12 +11,18 @@ export const login = createAsyncThunk("user/login", async (payload) => {
   return await http.post("/authorizations", payload);
 });
 
+// 获取用户信息
+export const getUserInfo = createAsyncThunk("user/profile", async (payload) => {
+  return await http.get("/user/profile");
+});
+
 // slice 名称
 export const USER_FEATURE_KEY = "user";
 
 // 属性的初始值
 const initialState = {
   token: getTokenByLocalStorage() || "",
+  userInfo: {},
 };
 
 export const { actions, reducer: userReducer } = createSlice({
@@ -58,6 +64,11 @@ export const { actions, reducer: userReducer } = createSlice({
     // 失败
     [login.rejected]: (state, action) => {
       console.log("rejected", action);
+    },
+    // 获取用户信息
+    [getUserInfo.fulfilled]: (state, action) => {
+      console.log("userInfo", action);
+      state.userInfo = action.payload;
     },
   },
 });
