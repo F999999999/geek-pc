@@ -1,11 +1,38 @@
-import { useRoutes } from "react-router-dom";
-import Home from "@/pages/Home";
+import { Navigate, useRoutes } from "react-router-dom";
 import Login from "@/pages/Login";
+import Layout from "@/pages/Layout";
+import Dashboard from "@/pages/Layout/Dashboard";
+import Article from "@/pages/Layout/Article";
+import Publish from "@/pages/Layout/Publish";
+import NotFound from "@/pages/Layout/NotFound";
+import RouterBeforeEach from "@/components/RouterBeforeEach";
 
 const routes = [
-  { path: "/", element: <Home />, title: "首页", auth: true },
-  { path: "/login", element: <Login />, title: "登录" },
-  { path: "*", element: <div>404</div>, title: "404" },
+  {
+    path: "/",
+    element: <RouterBeforeEach />,
+    children: [
+      { path: "/login", element: <Login />, title: "登录" },
+      {
+        path: "/",
+        title: "首页",
+        auth: true,
+        children: [{ index: true, element: <Navigate to="/home" /> }],
+      },
+      {
+        path: "/home",
+        element: <Layout />,
+        auth: true,
+        children: [
+          { index: true, element: <Navigate to="/home/dashboard" /> },
+          { path: "dashboard", element: <Dashboard />, auth: true },
+          { path: "article", element: <Article />, auth: true },
+          { path: "Publish", element: <Publish />, auth: true },
+        ],
+      },
+    ],
+  },
+  { path: "*", element: <NotFound />, title: "页面不存在 - 404" },
 ];
 
 function AppRoute() {

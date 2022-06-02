@@ -1,12 +1,13 @@
-import "./index.scss";
+import styles from "./index.module.scss";
 import logo from "../../assets/images/logo.png";
 import { Button, Checkbox, Form, Input } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { login } from "@/store/userSlice";
 
 const Login = () => {
+  const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -16,7 +17,9 @@ const Login = () => {
     );
     if (!result.error) {
       // 登录成功
-      navigate("/");
+      const redirectURL = location.state.redirectURL;
+      // 如果有重定向URL则跳转到重定向URL 否则跳转到首页
+      navigate(redirectURL || "/");
     } else {
       // 登录失败
       alert(result.error);
@@ -24,10 +27,10 @@ const Login = () => {
   };
 
   return (
-    <div className="login">
-      <div className="login-container">
-        <div className="login-wrapper">
-          <img className="login-logo" src={logo} alt="" />
+    <div className={styles.root}>
+      <div className="container">
+        <div className="wrapper">
+          <img className="logo" src={logo} alt="" />
           {/* 登录表单 */}
           <Form
             name="basic"
