@@ -1,5 +1,6 @@
 import axios from "axios";
-import { getTokenByLocalStorage } from "@/utils/auth";
+import { clearTokenByLocalStorage, getTokenByLocalStorage } from "@/utils/auth";
+import { message } from "antd";
 
 const http = axios.create({
   baseURL: "http://geek.itheima.net/v1_0",
@@ -21,7 +22,20 @@ http.interceptors.response.use(
   (res) => {
     return res?.data?.data || res;
   },
-  (e) => Promise.reject(e)
+  (e) => {
+    if (e.response.status === 401) {
+      // 弹出提示
+      message.error("登录失效");
+      // 清空 token
+      clearTokenByLocalStorage();
+      // 防止跳转login的时候接口才处理401
+      if (window.location.pathname !== "/login") {
+        // 跳转到登录页
+        window.location.pathname = "/login";
+      }
+    }
+    Promise.reject(e);
+  }
 );
 
 export { http };
