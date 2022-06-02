@@ -14,6 +14,11 @@ import Sider from "antd/es/layout/Sider";
 const GeekLayout = () => {
   const location = useLocation();
 
+  // 对发布文章路径进行处理 使其能匹配到菜单的key的值
+  const menuSelectedKey = location.pathname.startsWith("/home/publish")
+    ? "/home/publish"
+    : location.pathname;
+
   // 退出登录
   const onLogout = () => {};
   return (
@@ -21,7 +26,6 @@ const GeekLayout = () => {
       {/* 头部 - 横向通栏 */}
       <Header className="header">
         <div className="logo" />
-
         <div className="user-info">
           <span className="user-name">用户名</span>
           <span className="user-logout">
@@ -41,7 +45,7 @@ const GeekLayout = () => {
           <Menu
             mode="inline"
             theme="dark"
-            selectedKeys={[location.pathname]}
+            selectedKeys={[menuSelectedKey]}
             style={{ height: "100%", borderRight: 0 }}
           >
             <Menu.Item icon={<HomeOutlined />} key="/home/dashboard">

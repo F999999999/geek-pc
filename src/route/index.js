@@ -7,7 +7,7 @@ import Publish from "@/pages/Layout/Publish";
 import NotFound from "@/pages/Layout/NotFound";
 import RouterBeforeEach from "@/components/RouterBeforeEach";
 
-const routes = [
+export const routes = [
   {
     path: "/",
     element: <RouterBeforeEach />,
@@ -24,10 +24,29 @@ const routes = [
         element: <Layout />,
         auth: true,
         children: [
-          { index: true, element: <Navigate to="/home/dashboard" /> },
-          { path: "dashboard", element: <Dashboard />, auth: true },
-          { path: "article", element: <Article />, auth: true },
-          { path: "Publish", element: <Publish />, auth: true },
+          {
+            index: true,
+            element: <Navigate to="/home/dashboard" />,
+          },
+          {
+            path: "dashboard",
+            element: <Dashboard />,
+            auth: true,
+            title: "数据概览",
+          },
+          {
+            path: "article",
+            element: <Article />,
+            auth: true,
+            title: "内容管理",
+          },
+          {
+            path: "Publish",
+            element: <Publish />,
+            auth: true,
+            children: [{ path: ":id", element: <div>id</div> }],
+            title: "发布文章",
+          },
         ],
       },
     ],
@@ -38,21 +57,5 @@ const routes = [
 function AppRoute() {
   return useRoutes(routes);
 }
-
-//根据路径获取路由
-const checkAuth = (routers, path) => {
-  for (const data of routers) {
-    if (data.path === path) return data;
-    if (data.children) {
-      const res = checkAuth(data.children, path);
-      if (res) return res;
-    }
-  }
-  return null;
-};
-
-export const checkRouterAuth = (path) => {
-  return checkAuth(routes, path);
-};
 
 export default AppRoute;
