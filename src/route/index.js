@@ -1,11 +1,11 @@
 import { Navigate, useRoutes } from "react-router-dom";
+import RouterBeforeEach from "@/components/RouterBeforeEach";
+import NotFound from "@/pages/Layout/NotFound";
 import Login from "@/pages/Login";
 import Layout from "@/pages/Layout";
 import Dashboard from "@/pages/Layout/Dashboard";
 import Article from "@/pages/Layout/Article";
 import Publish from "@/pages/Layout/Publish";
-import NotFound from "@/pages/Layout/NotFound";
-import RouterBeforeEach from "@/components/RouterBeforeEach";
 
 export const routes = [
   {
