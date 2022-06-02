@@ -1,7 +1,7 @@
 import styles from "./index.module.scss";
 
 const Dashboard = () => {
-  return <div className={styles.root}>Dashboard</div>;
+  return <div className={styles.root}></div>;
 };
 
 export default Dashboard;
