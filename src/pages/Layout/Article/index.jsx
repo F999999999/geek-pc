@@ -15,7 +15,7 @@ import { Link } from "react-router-dom";
 import styles from "./index.module.scss";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { getArticles, getChannels } from "@/store/articleSlice";
 import defaultImg from "@/assets/images/error.png";
 
@@ -31,29 +31,45 @@ const Article = () => {
     pageSize,
     count,
   } = useSelector((state) => state.article);
+
+  // 请求参数
+  const params = useRef({
+    page: 1,
+    per_page: 10,
+    channel_id: undefined,
+    status: undefined,
+    begin_pubdate: undefined,
+    end_pubdate: undefined,
+  });
+
   useEffect(() => {
     dispatch(getChannels());
-    dispatch(getArticles());
-  }, []);
+    dispatch(getArticles(params.current));
+  }, [dispatch]);
 
   // 筛选文章
   const onFinish = (values) => {
-    const params = {};
-    params.status = values.status;
-    params.channel_id = values.channel_id;
+    params.current.status = values.status;
+    params.current.channel_id = values.channel_id;
     if (values.dateArr) {
-      params.begin_pubdate = values.dateArr[0].format("YYYY-MM-DD HH:mm:ss");
-      params.end_pubdate = values.dateArr[1].format("YYYY-MM-DD HH:mm:ss");
+      params.current.begin_pubdate = values.dateArr[0].format(
+        "YYYY-MM-DD HH:mm:ss"
+      );
+      params.current.end_pubdate = values.dateArr[1].format(
+        "YYYY-MM-DD HH:mm:ss"
+      );
     } else {
-      params.begin_pubdate = undefined;
-      params.end_pubdate = undefined;
+      params.current.begin_pubdate = undefined;
+      params.current.end_pubdate = undefined;
     }
-    dispatch(getArticles(params));
+    dispatch(getArticles(params.current));
   };
 
   // 文章列表翻页
   const onPageChange = (page, pageSize) => {
-    dispatch(getArticles({ page, per_page: pageSize }));
+    params.current.page = page;
+    params.current.per_page = pageSize;
+    dispatch(getArticles(params.current));
   };
 
   // 阅读状态
