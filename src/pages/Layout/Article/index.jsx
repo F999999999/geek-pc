@@ -8,7 +8,6 @@ import {
   message,
   Modal,
   Radio,
-  Select,
   Space,
   Table,
   Tag,
@@ -18,15 +17,14 @@ import styles from "./index.module.scss";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef } from "react";
-import { delArticles, getArticles, getChannels } from "@/store/articleSlice";
+import { delArticles, getArticles } from "@/store/articleSlice";
 import defaultImg from "@/assets/images/error.png";
+import { Channel } from "@/components/Channel";
 
 const Article = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // 频道列表数据
-  const channelsList = useSelector((state) => state.article.channels);
   // 文章列表和分页数据
   const {
     list: articleList,
@@ -46,7 +44,6 @@ const Article = () => {
   });
 
   useEffect(() => {
-    dispatch(getChannels());
     dispatch(getArticles(params.current));
   }, [dispatch]);
 
@@ -200,13 +197,7 @@ const Article = () => {
           </Form.Item>
           <Form.Item label="频道：">
             <Form.Item name="channel_id">
-              <Select style={{ width: 288 }}>
-                {channelsList.map((item) => (
-                  <Select.Option key={item.id} value={item.id}>
-                    {item.name}
-                  </Select.Option>
-                ))}
-              </Select>
+              <Channel width={288} />
             </Form.Item>
           </Form.Item>
           <Form.Item label="日期：">

@@ -32,13 +32,6 @@ export const { actions, reducer: userReducer } = createSlice({
   initialState,
   // reducers 属性用于指定 slice 的 reducer 函数, 用于处理 action, 可以是一个函数, 在函数中可以访问到其他 slice 的 state
   reducers: {
-    // 设置 token
-    setToken: (state, action) => {
-      // 保存 token 到 localStorage
-      setTokenByLocalStorage(action.payload);
-      // 更新 state
-      state.token = action.payload;
-    },
     // 清空 token
     clearToken: (state) => {
       // 清空保存在 localStorage 中的 token
@@ -67,7 +60,6 @@ export const { actions, reducer: userReducer } = createSlice({
     },
     // 获取用户信息
     [getUserInfo.fulfilled]: (state, action) => {
-      console.log("userInfo", action);
       state.userInfo = action.payload;
     },
   },
@@ -75,6 +67,6 @@ export const { actions, reducer: userReducer } = createSlice({
 
 // actions: 对象类型，用于存储 action creator 函数
 // { setToken: (payload) => ({ type: "user/setToken", payload }) }
-export const { setToken, clearToken } = actions;
+export const { clearToken } = actions;
 
 export default userReducer;

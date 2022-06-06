@@ -1,18 +1,9 @@
 import styles from "./index.module.scss";
-import { Breadcrumb, Button, Card, Form, Input, Select, Space } from "antd";
+import { Breadcrumb, Button, Card, Form, Input, Space } from "antd";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { getChannels } from "@/store/articleSlice";
-import { useEffect } from "react";
+import { Channel } from "@/components/Channel";
 
 const Publish = () => {
-  const dispatch = useDispatch();
-  // 频道列表数据
-  const channelsList = useSelector((state) => state.article.channels);
-  useEffect(() => {
-    dispatch(getChannels());
-  }, [dispatch]);
-
   return (
     <div className={styles.root}>
       <Card
@@ -33,15 +24,7 @@ const Publish = () => {
             <Input placeholder="请输入文章标题" style={{ width: 400 }} />
           </Form.Item>
           <Form.Item label="所属频道：" name="channel_id">
-            <Select style={{ width: 400 }}>
-              {channelsList.map((item) => {
-                return (
-                  <Select.Option key={item.id} value={item.id}>
-                    {item.name}
-                  </Select.Option>
-                );
-              })}
-            </Select>
+            <Channel width={400} />
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 4 }}>
             <Space>

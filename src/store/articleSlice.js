@@ -45,7 +45,6 @@ export const { reducer: articleReducer } = createSlice({
     },
     // 文章列表
     [getArticles.fulfilled]: (state, action) => {
-      console.log(action.payload);
       state.page = action.payload.page;
       state.pageSize = action.payload.per_page;
       state.count = action.payload.total_count;
