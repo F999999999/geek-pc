@@ -6,7 +6,7 @@ export const getChannels = createAsyncThunk("article/getChannel", async () => {
   return await http.get("channels");
 });
 
-// 获取内容列表
+// 获取文章列表
 export const getArticles = createAsyncThunk(
   "article/getArticles",
   async (payload) => {
@@ -35,7 +35,7 @@ export const { reducer: articleReducer } = createSlice({
     [getChannels.fulfilled]: (state, action) => {
       state.channels = action.payload.channels;
     },
-    // 内容列表
+    // 文章列表
     [getArticles.fulfilled]: (state, action) => {
       console.log(action.payload);
       state.page = action.payload.page;

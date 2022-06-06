@@ -21,7 +21,7 @@ const Article = () => {
 
   // 频道列表数据
   const channelsList = useSelector((state) => state.article.channels);
-  // 内容列表
+  // 文章列表
   const articleList = useSelector((state) => state.article.list);
   useEffect(() => {
     dispatch(getChannels());
