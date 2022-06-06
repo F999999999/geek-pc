@@ -12,8 +12,19 @@ import {
 import { Link } from "react-router-dom";
 import styles from "./index.module.scss";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getChannels } from "@/store/articleSlice";
 
 const Article = () => {
+  const dispatch = useDispatch();
+
+  // 频道列表数据
+  const channelsList = useSelector((state) => state.article.channels);
+  useEffect(() => {
+    dispatch(getChannels());
+  }, []);
+
   // 表格列定义
   const columns = [
     {
@@ -90,15 +101,18 @@ const Article = () => {
             </Radio.Group>
           </Form.Item>
           <Form.Item label="频道：">
-            <Form.Item label="频道：" name="channel_id">
+            <Form.Item name="channel_id">
               <Select style={{ width: 288 }}>
-                <Select.Option value={1}>Java</Select.Option>
-                <Select.Option value={2}>前端</Select.Option>
+                {channelsList.map((item) => (
+                  <Select.Option key={item.id} value={item.id}>
+                    {item.name}
+                  </Select.Option>
+                ))}
               </Select>
             </Form.Item>
           </Form.Item>
           <Form.Item label="日期：">
-            <Form.Item label="日期：" name="dateArr">
+            <Form.Item name="dateArr">
               <DatePicker.RangePicker />
             </Form.Item>
           </Form.Item>
