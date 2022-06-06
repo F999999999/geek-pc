@@ -31,6 +31,21 @@ const Article = () => {
     dispatch(getArticles());
   }, []);
 
+  // 筛选文章
+  const onFinish = (values) => {
+    const params = {};
+    params.status = values.status;
+    params.channel_id = values.channel_id;
+    if (values.dateArr) {
+      params.begin_pubdate = values.dateArr[0].format("YYYY-MM-DD HH:mm:ss");
+      params.end_pubdate = values.dateArr[1].format("YYYY-MM-DD HH:mm:ss");
+    } else {
+      params.begin_pubdate = undefined;
+      params.end_pubdate = undefined;
+    }
+    dispatch(getArticles(params));
+  };
+
   // 阅读状态
   const statusLabel = [
     { text: "草稿", color: "default" },
@@ -114,7 +129,7 @@ const Article = () => {
         }
       >
         {/* 表单 */}
-        <Form>
+        <Form onFinish={onFinish}>
           <Form.Item label="状态：" name="status">
             <Radio.Group>
               <Radio value={undefined}>全部</Radio>
@@ -141,7 +156,9 @@ const Article = () => {
             </Form.Item>
           </Form.Item>
           <Form.Item>
-            <Button type="primary">筛选</Button>
+            <Button type="primary" htmlType="submit">
+              筛选
+            </Button>
           </Form.Item>
         </Form>
       </Card>
