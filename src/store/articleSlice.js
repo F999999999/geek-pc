@@ -22,6 +22,16 @@ export const delArticles = createAsyncThunk(
   }
 );
 
+// 添加文章
+export const addArticle = createAsyncThunk(
+  "article/addArticle",
+  async (payload) => {
+    const draft = !!payload.draft;
+    delete payload.draft;
+    return http.post(`mp/articles?draft=${draft}`, payload);
+  }
+);
+
 // slice 名称
 export const ARTICLE_FEATURE_KEY = "article";
 

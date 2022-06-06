@@ -11,13 +11,17 @@ import {
   Space,
   Upload,
 } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Channel } from "@/components/Channel";
 import { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import ReactQuill from "react-quill";
+import { addArticle } from "@/store/articleSlice";
+import { useDispatch } from "react-redux";
 
 const Publish = () => {
+  const dispatch = useDispatch();
+  const navigation = useNavigate();
   // 文章封面类型
   const [type, setType] = useState(1);
   // 修改文章封面类型
@@ -35,10 +39,18 @@ const Publish = () => {
 
   // 表单校验
   const onFinish = async (values) => {
+    // 判断封面图片是否上传
     if (type !== fileList.length) {
       return message.warning("请按照选择的封面类型上传图片");
     }
-    console.log("ok");
+    // 发布文章
+    dispatch(
+      addArticle({
+        ...values,
+        cover: { type, images: fileList.map((item) => item.response.data.url) },
+      })
+    );
+    navigation("/home/article");
   };
 
   return (
