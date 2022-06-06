@@ -24,8 +24,13 @@ const Article = () => {
 
   // 频道列表数据
   const channelsList = useSelector((state) => state.article.channels);
-  // 文章列表
-  const articleList = useSelector((state) => state.article.list);
+  // 文章列表和分页数据
+  const {
+    list: articleList,
+    page,
+    pageSize,
+    count,
+  } = useSelector((state) => state.article);
   useEffect(() => {
     dispatch(getChannels());
     dispatch(getArticles());
@@ -44,6 +49,11 @@ const Article = () => {
       params.end_pubdate = undefined;
     }
     dispatch(getArticles(params));
+  };
+
+  // 文章列表翻页
+  const onPageChange = (page, pageSize) => {
+    dispatch(getArticles({ page, per_page: pageSize }));
   };
 
   // 阅读状态
@@ -166,7 +176,17 @@ const Article = () => {
         title={`根据筛选条件共查询到 100 条结果：`}
         style={{ marginTop: 24 }}
       >
-        <Table columns={columns} dataSource={articleList} rowKey="id"></Table>
+        <Table
+          columns={columns}
+          dataSource={articleList}
+          rowKey="id"
+          pagination={{
+            current: page,
+            pageSize,
+            total: count,
+            onChange: onPageChange,
+          }}
+        ></Table>
       </Card>
     </div>
   );
