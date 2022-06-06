@@ -6,6 +6,14 @@ export const getChannels = createAsyncThunk("article/getChannel", async () => {
   return await http.get("channels");
 });
 
+// 获取内容列表
+export const getArticles = createAsyncThunk(
+  "article/getArticles",
+  async (payload) => {
+    return await http.get("mp/articles", { params: payload });
+  }
+);
+
 // slice 名称
 export const ARTICLE_FEATURE_KEY = "article";
 
@@ -23,8 +31,17 @@ export const { reducer: articleReducer } = createSlice({
   initialState,
   reducers: {},
   extraReducers: {
+    // 频道数据
     [getChannels.fulfilled]: (state, action) => {
       state.channels = action.payload.channels;
+    },
+    // 内容列表
+    [getArticles.fulfilled]: (state, action) => {
+      console.log(action.payload);
+      state.page = action.payload.page;
+      state.pageSize = action.payload.per_page;
+      state.count = action.payload.total_count;
+      state.list = action.payload.results;
     },
   },
 });

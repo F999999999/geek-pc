@@ -14,15 +14,18 @@ import styles from "./index.module.scss";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { getChannels } from "@/store/articleSlice";
+import { getArticles, getChannels } from "@/store/articleSlice";
 
 const Article = () => {
   const dispatch = useDispatch();
 
   // 频道列表数据
   const channelsList = useSelector((state) => state.article.channels);
+  // 内容列表
+  const articleList = useSelector((state) => state.article.list);
   useEffect(() => {
     dispatch(getChannels());
+    dispatch(getArticles());
   }, []);
 
   // 表格列定义
@@ -125,7 +128,7 @@ const Article = () => {
         title={`根据筛选条件共查询到 100 条结果：`}
         style={{ marginTop: 24 }}
       >
-        <Table columns={columns} dataSource={[]}></Table>
+        <Table columns={columns} dataSource={articleList}></Table>
       </Card>
     </div>
   );
