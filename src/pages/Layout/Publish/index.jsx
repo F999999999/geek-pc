@@ -1,3 +1,4 @@
+import "react-quill/dist/quill.snow.css";
 import styles from "./index.module.scss";
 import {
   Breadcrumb,
@@ -5,6 +6,7 @@ import {
   Card,
   Form,
   Input,
+  message,
   Radio,
   Space,
   Upload,
@@ -13,6 +15,7 @@ import { Link } from "react-router-dom";
 import { Channel } from "@/components/Channel";
 import { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
+import ReactQuill from "react-quill";
 
 const Publish = () => {
   // 文章封面类型
@@ -30,6 +33,14 @@ const Publish = () => {
     setFileList(fileList);
   };
 
+  // 表单校验
+  const onFinish = async (values) => {
+    if (type !== fileList.length) {
+      return message.warning("请按照选择的封面类型上传图片");
+    }
+    console.log("ok");
+  };
+
   return (
     <div className={styles.root}>
       <Card
@@ -45,11 +56,19 @@ const Publish = () => {
           </Breadcrumb>
         }
       >
-        <Form labelCol={{ span: 4 }}>
-          <Form.Item label="文章标题：" name="title">
+        <Form labelCol={{ span: 4 }} onFinish={onFinish} labelCol={{ span: 4 }}>
+          <Form.Item
+            label="文章标题："
+            name="title"
+            rules={[{ required: true, message: "请输入文章标题" }]}
+          >
             <Input placeholder="请输入文章标题" style={{ width: 400 }} />
           </Form.Item>
-          <Form.Item label="所属频道：" name="channel_id">
+          <Form.Item
+            label="所属频道："
+            name="channel_id"
+            rules={[{ required: true, message: "请选择所属频道" }]}
+          >
             <Channel width={400} />
           </Form.Item>
           <Form.Item label="文章封面：">
@@ -80,9 +99,20 @@ const Publish = () => {
               </div>
             ) : null}
           </Form.Item>
+          <Form.Item
+            label="文章内容："
+            name="content"
+            initialValue=""
+            wrapperCol={{ span: 16 }}
+            rules={[{ required: true, message: "请输入文章内容" }]}
+          >
+            <ReactQuill placeholder="请输入文章内容" />
+          </Form.Item>
           <Form.Item wrapperCol={{ offset: 4 }}>
             <Space>
-              <Button type="primary">发表文章</Button>
+              <Button type="primary" htmlType="submit">
+                发表文章
+              </Button>
             </Space>
           </Form.Item>
         </Form>
