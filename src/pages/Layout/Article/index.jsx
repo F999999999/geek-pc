@@ -5,22 +5,25 @@ import {
   DatePicker,
   Form,
   Image,
+  message,
+  Modal,
   Radio,
   Select,
   Space,
   Table,
   Tag,
 } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./index.module.scss";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef } from "react";
-import { getArticles, getChannels } from "@/store/articleSlice";
+import { delArticles, getArticles, getChannels } from "@/store/articleSlice";
 import defaultImg from "@/assets/images/error.png";
 
 const Article = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // 频道列表数据
   const channelsList = useSelector((state) => state.article.channels);
@@ -70,6 +73,26 @@ const Article = () => {
     params.current.page = page;
     params.current.per_page = pageSize;
     dispatch(getArticles(params.current));
+  };
+
+  // 编辑文章
+  const handleEditArticle = (id) => {
+    navigate("/home/publish/" + id);
+  };
+
+  // 删除文章
+  const delArticleFn = (id) => {
+    Modal.confirm({
+      title: "您是否确认删除该文章？",
+      cancelText: "取消",
+      okText: "确认",
+      onOk: async () => {
+        console.log(id);
+        await dispatch(delArticles(id));
+        await dispatch(getArticles(params.current));
+        message.success("删除成功");
+      },
+    });
   };
 
   // 阅读状态
@@ -132,10 +155,20 @@ const Article = () => {
     {
       title: "操作",
       key: "action",
-      render: () => (
+      render: (text, record) => (
         <Space size="middle">
-          <Button type="primary" shape="circle" icon={<EditOutlined />} />
-          <Button type="danger" shape="circle" icon={<DeleteOutlined />} />
+          <Button
+            type="primary"
+            shape="circle"
+            icon={<EditOutlined />}
+            onClick={() => handleEditArticle(record.id)}
+          />
+          <Button
+            type="danger"
+            shape="circle"
+            icon={<DeleteOutlined />}
+            onClick={() => delArticleFn(record.id)}
+          />
         </Space>
       ),
     },

@@ -14,6 +14,14 @@ export const getArticles = createAsyncThunk(
   }
 );
 
+// 删除文章
+export const delArticles = createAsyncThunk(
+  "article/delArticles",
+  async (payload) => {
+    return await http.delete("mp/articles/" + payload);
+  }
+);
+
 // slice 名称
 export const ARTICLE_FEATURE_KEY = "article";
 
