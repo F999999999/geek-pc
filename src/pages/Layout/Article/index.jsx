@@ -4,10 +4,12 @@ import {
   Card,
   DatePicker,
   Form,
+  Image,
   Radio,
   Select,
   Space,
   Table,
+  Tag,
 } from "antd";
 import { Link } from "react-router-dom";
 import styles from "./index.module.scss";
@@ -15,6 +17,7 @@ import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getArticles, getChannels } from "@/store/articleSlice";
+import defaultImg from "@/assets/images/error.png";
 
 const Article = () => {
   const dispatch = useDispatch();
@@ -28,13 +31,28 @@ const Article = () => {
     dispatch(getArticles());
   }, []);
 
+  // 阅读状态
+  const statusLabel = [
+    { text: "草稿", color: "default" },
+    { text: "待审核", color: "blue" },
+    { text: "审核通过", color: "green" },
+    { text: "审核拒绝", color: "red" },
+  ];
+
   // 表格列定义
   const columns = [
     {
       title: "封面",
       dataIndex: "cover",
       key: "cover",
-      render: () => "自定义封面",
+      render: (cover) => (
+        <Image
+          src={cover?.images?.[0] || defaultImg}
+          style={{ objectFit: "cover" }}
+          width={200}
+          height={120}
+        />
+      ),
     },
     {
       title: "标题",
@@ -45,7 +63,10 @@ const Article = () => {
       title: "状态",
       dataIndex: "status",
       key: "status",
-      render: () => "自定义状态",
+      render: (status) => {
+        const info = statusLabel[status];
+        return <Tag color={info.color}>{info.text}</Tag>;
+      },
     },
     {
       title: "发布时间",
@@ -72,8 +93,8 @@ const Article = () => {
       key: "action",
       render: () => (
         <Space size="middle">
-          <Button type="link" icon={<EditOutlined />} />
-          <Button type="link" icon={<DeleteOutlined />} />
+          <Button type="primary" shape="circle" icon={<EditOutlined />} />
+          <Button type="danger" shape="circle" icon={<DeleteOutlined />} />
         </Space>
       ),
     },
@@ -128,7 +149,7 @@ const Article = () => {
         title={`根据筛选条件共查询到 100 条结果：`}
         style={{ marginTop: 24 }}
       >
-        <Table columns={columns} dataSource={articleList}></Table>
+        <Table columns={columns} dataSource={articleList} rowKey="id"></Table>
       </Card>
     </div>
   );
