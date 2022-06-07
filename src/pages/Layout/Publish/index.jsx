@@ -11,17 +11,18 @@ import {
   Space,
   Upload,
 } from "antd";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Channel } from "@/components/Channel";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import ReactQuill from "react-quill";
-import { addArticle } from "@/store/articleSlice";
+import { addArticle, editArticle, getArticle } from "@/store/articleSlice";
 import { useDispatch } from "react-redux";
 
 const Publish = () => {
   const dispatch = useDispatch();
   const navigation = useNavigate();
+  const params = useParams();
   // 文章封面类型
   const [type, setType] = useState(1);
   // 修改文章封面类型
@@ -37,21 +38,57 @@ const Publish = () => {
     setFileList(fileList);
   };
 
-  // 表单校验
-  const onFinish = async (values) => {
+  // 发布文章
+  const addCurrentArticle = (values, draft = false) => {
     // 判断封面图片是否上传
     if (type !== fileList.length) {
       return message.warning("请按照选择的封面类型上传图片");
     }
-    // 发布文章
-    dispatch(
-      addArticle({
-        ...values,
-        cover: { type, images: fileList.map((item) => item.response.data.url) },
-      })
-    );
+    const data = {
+      ...values,
+      cover: {
+        type,
+        images: fileList.map((item) => item?.response?.data?.url || item.url),
+      },
+      draft,
+    };
+    // 如果是否有文章id
+    if (params.id) {
+      // 编辑文章
+      data.id = params.id;
+      dispatch(editArticle(data));
+    } else {
+      // 发布文章
+      dispatch(addArticle(data));
+    }
+  };
+
+  // 表单校验
+  const onFinish = async (values) => {
+    addCurrentArticle(values);
     navigation("/home/article");
   };
+
+  // 编辑回显文章
+  const [form] = Form.useForm();
+  useEffect(() => {
+    const setFormData = async () => {
+      if (params.id) {
+        const { payload: result } = await dispatch(getArticle(params.id));
+        if (result) {
+          const { title, cover, content, channel_id } = result;
+          form.setFieldsValue({ title, content, channel_id });
+          setType(cover.type);
+          setFileList(cover.images.map((item) => ({ url: item })));
+        }
+      } else {
+        setType(1);
+        setFileList([]);
+        form.resetFields();
+      }
+    };
+    setFormData();
+  }, [dispatch, form, params]);
 
   return (
     <div className={styles.root}>
@@ -64,11 +101,13 @@ const Publish = () => {
             <Breadcrumb.Item>
               <Link to="/article">内容管理</Link>
             </Breadcrumb.Item>
-            <Breadcrumb.Item>发布文章</Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {params.id ? "修改文章" : "发布文章"}
+            </Breadcrumb.Item>
           </Breadcrumb>
         }
       >
-        <Form labelCol={{ span: 4 }} onFinish={onFinish} labelCol={{ span: 4 }}>
+        <Form labelCol={{ span: 4 }} onFinish={onFinish} form={form}>
           <Form.Item
             label="文章标题："
             name="title"
@@ -122,8 +161,8 @@ const Publish = () => {
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 4 }}>
             <Space>
-              <Button type="primary" htmlType="submit">
-                发表文章
+              <Button type="primary" htmlType="submit" size="large">
+                {params.id ? "修改文章" : "发布文章"}
               </Button>
             </Space>
           </Form.Item>

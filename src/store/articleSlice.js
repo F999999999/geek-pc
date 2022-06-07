@@ -32,6 +32,23 @@ export const addArticle = createAsyncThunk(
   }
 );
 
+// 修改文章
+export const editArticle = createAsyncThunk(
+  "article/editArticle",
+  (payload) => {
+    const id = payload.id;
+    const draft = !!payload.draft;
+    delete payload.id;
+    delete payload.draft;
+    return http.put(`mp/articles/${id}?draft=${draft}`, payload);
+  }
+);
+
+// 获取文章
+export const getArticle = createAsyncThunk("article/getArticle", (payload) => {
+  return http.get("mp/articles/" + payload);
+});
+
 // slice 名称
 export const ARTICLE_FEATURE_KEY = "article";
 
