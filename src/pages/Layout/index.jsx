@@ -19,6 +19,25 @@ const GeekLayout = () => {
   const navigate = useNavigate();
   const userInfo = useSelector((state) => state.user.userInfo);
 
+  // 导航菜单
+  const menuList = [
+    {
+      label: <Link to="/home/dashboard">数据概览</Link>,
+      key: "/home/dashboard",
+      icon: <HomeOutlined />,
+    },
+    {
+      label: <Link to="/home/article">内容管理</Link>,
+      key: "/home/article",
+      icon: <DiffOutlined />,
+    },
+    {
+      label: <Link to="/home/publish">发布文章</Link>,
+      key: "/home/publish",
+      icon: <EditOutlined />,
+    },
+  ];
+
   // 对发布文章路径进行处理 使其能匹配到菜单的key的值
   const menuSelectedKey = location.pathname.startsWith("/home/publish")
     ? "/home/publish"
@@ -61,17 +80,8 @@ const GeekLayout = () => {
             theme="dark"
             selectedKeys={[menuSelectedKey]}
             style={{ height: "100%", borderRight: 0 }}
-          >
-            <Menu.Item icon={<HomeOutlined />} key="/home/dashboard">
-              <Link to="/home/dashboard">数据概览</Link>
-            </Menu.Item>
-            <Menu.Item icon={<DiffOutlined />} key="/home/article">
-              <Link to="/home/article">内容管理</Link>
-            </Menu.Item>
-            <Menu.Item icon={<EditOutlined />} key="/home/publish">
-              <Link to="/home/publish">发布文章</Link>
-            </Menu.Item>
-          </Menu>
+            items={menuList}
+          />
         </Sider>
         <Layout className="layout-content" style={{ padding: 20 }}>
           {/* 渲染匹配的子路由的插槽 */}
