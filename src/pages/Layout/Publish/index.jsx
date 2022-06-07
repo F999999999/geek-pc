@@ -39,7 +39,7 @@ const Publish = () => {
   };
 
   // 发布文章
-  const addCurrentArticle = (values, draft = false) => {
+  const addCurrentArticle = async (values, draft = false) => {
     // 判断封面图片是否上传
     if (type !== fileList.length) {
       return message.warning("请按照选择的封面类型上传图片");
@@ -56,17 +56,26 @@ const Publish = () => {
     if (params.id) {
       // 编辑文章
       data.id = params.id;
-      dispatch(editArticle(data));
+      await dispatch(editArticle(data));
     } else {
       // 发布文章
-      dispatch(addArticle(data));
+      await dispatch(addArticle(data));
     }
+    message.success("保存成功");
   };
 
-  // 表单校验
+  // 表单校验并提交
   const onFinish = async (values) => {
-    addCurrentArticle(values);
+    await addCurrentArticle(values);
     navigation("/home/article");
+  };
+
+  // 保存文章到草稿
+  const saveDarft = async () => {
+    // 获取表单数据
+    const values = await form.validateFields();
+    // 添加到草稿
+    await addCurrentArticle(values, true);
   };
 
   // 编辑回显文章
@@ -163,6 +172,9 @@ const Publish = () => {
             <Space>
               <Button type="primary" htmlType="submit" size="large">
                 {params.id ? "修改文章" : "发布文章"}
+              </Button>
+              <Button size="large" onClick={saveDarft}>
+                存入草稿
               </Button>
             </Space>
           </Form.Item>
